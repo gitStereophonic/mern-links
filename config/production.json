@@ -1,6 +1,6 @@
 {
-  "port": 5000,
-  "jwtSecret": "sergey mern",
+  "port": 80,
+  "jwtSecret": "raccoon mern",
   "mongoUrl": "mongodb+srv://sergey:45z-y7G-q92-q4p@cluster0.d8dvz.mongodb.net/app?retryWrites=true&w=majority",
-  "baseUrl": "http://localhost:5000"
+  "baseUrl": "http://raccoon-dev.ru"
 }
