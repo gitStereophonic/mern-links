@@ -13,19 +13,22 @@ const CreatePage = () => {
   const { request } = useHttp();
   const [link, setLink] = useState('');
   const handleChange = (e) => setLink(e.target.value);
+  const handleClick = async () => {
+    try {
+      const data = await request(
+        '/api/link/generate',
+        'POST',
+        {
+          from: link,
+        },
+        { Authorization: `Bearer ${auth.token}` }
+      );
+      history.push(`/detail/${data.link._id}`);
+    } catch (e) {}
+  };
   const handleKeyPress = async (e) => {
     if (e.key === 'Enter') {
-      try {
-        const data = await request(
-          '/api/link/generate',
-          'POST',
-          {
-            from: link,
-          },
-          { Authorization: `Bearer ${auth.token}` }
-        );
-        history.push(`/detail/${data.link._id}`);
-      } catch (e) {}
+      handleClick();
     }
   };
 
@@ -51,6 +54,7 @@ const CreatePage = () => {
           className='btn waves-effect waves-light green'
           type='button'
           name='action'
+          onClick={handleClick}
         >
           Создать
           <i className='material-icons right'>send</i>
