@@ -4,13 +4,15 @@ import { useParams } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 // * Hooks
 import useHttp from '../hooks/http.hook';
+import useMessage from '../hooks/message.hook';
 // * Components
 import LinkCard from '../components/LinkCard';
 import Loader from '../components/Loader';
 
 const DetailPage = () => {
-  const { token } = useContext(AuthContext);
+  const { token, logout } = useContext(AuthContext);
   const { request, isLoading } = useHttp();
+  const message = useMessage();
   const [link, setLink] = useState(null);
   const linkId = useParams().id;
 
@@ -20,8 +22,13 @@ const DetailPage = () => {
         Authorization: 'Bearer ' + token,
       });
       setLink(fetched);
-    } catch (e) {}
-  }, [token, linkId, request]);
+    } catch (e) {
+      if (e.message === 'Нет авторизации') {
+        message(e.message);
+        logout();
+      }
+    }
+  }, [token, linkId, request, message, logout]);
 
   useEffect(() => {
     getLink();
