@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import cx from 'classnames';
 // * Hooks
 import useHttp from '../hooks/http.hook';
+import useMessage from '../hooks/message.hook';
 // * Styles
 import styles from './style.module.css';
 import AuthContext from '../context/AuthContext';
@@ -10,6 +11,7 @@ import AuthContext from '../context/AuthContext';
 const CreatePage = () => {
   const history = useHistory();
   const auth = useContext(AuthContext);
+  const message = useMessage();
   const { request } = useHttp();
   const [link, setLink] = useState('');
   const handleChange = (e) => setLink(e.target.value);
@@ -24,9 +26,15 @@ const CreatePage = () => {
         { Authorization: `Bearer ${auth.token}` }
       );
       history.push(`/detail/${data.link._id}`);
-    } catch (e) {}
+    } catch (e) {
+      if (e.message === 'Нет авторизации') {
+        message(e.message);
+        auth.logout();
+      }
+    }
   };
   const handleKeyPress = async (e) => {
+    if (!link) return;
     if (e.key === 'Enter') {
       handleClick();
     }
@@ -55,6 +63,7 @@ const CreatePage = () => {
           type='button'
           name='action'
           onClick={handleClick}
+          disabled={!link}
         >
           Создать
           <i className='material-icons right'>send</i>
